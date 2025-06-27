@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useCard } from '@/contexts/CardContext';
 import { CardData } from '@/types/card';
+import { getSocialMediaError } from '@/utils/urlValidation';
 
 export function CardCreationForm() {
   const { cardData, updateCardData } = useCard();
@@ -14,6 +15,18 @@ export function CardCreationForm() {
   const handleInputChange = (field: keyof CardData, value: string) => {
     updateCardData(field, value);
   };
+
+  // Get validation errors for social media fields
+  const linkedinError = getSocialMediaError(
+    'linkedin',
+    cardData.linkedin || ''
+  );
+  const githubError = getSocialMediaError('github', cardData.github || '');
+  const twitterError = getSocialMediaError('twitter', cardData.twitter || '');
+  const instagramError = getSocialMediaError(
+    'instagram',
+    cardData.instagram || ''
+  );
 
   const handleCustomLinkChange = (
     index: number,
@@ -174,12 +187,19 @@ export function CardCreationForm() {
                   <Input
                     id="linkedin"
                     type="url"
-                    placeholder="https://linkedin.com/in/johndoe"
+                    placeholder="https://www.linkedin.com/in/johndoe"
                     value={cardData.linkedin}
                     onChange={(e) =>
                       handleInputChange('linkedin', e.target.value)
                     }
                   />
+                  {linkedinError ? (
+                    <p className="text-xs text-destructive">{linkedinError}</p>
+                  ) : (
+                    <p className="text-xs text-muted-foreground">
+                      Format: https://www.linkedin.com/in/your-username
+                    </p>
+                  )}
                 </div>
 
                 <div className="space-y-2">
@@ -193,6 +213,13 @@ export function CardCreationForm() {
                       handleInputChange('github', e.target.value)
                     }
                   />
+                  {githubError ? (
+                    <p className="text-xs text-destructive">{githubError}</p>
+                  ) : (
+                    <p className="text-xs text-muted-foreground">
+                      Format: https://github.com/your-username
+                    </p>
+                  )}
                 </div>
 
                 <div className="space-y-2">
@@ -206,6 +233,13 @@ export function CardCreationForm() {
                       handleInputChange('twitter', e.target.value)
                     }
                   />
+                  {twitterError ? (
+                    <p className="text-xs text-destructive">{twitterError}</p>
+                  ) : (
+                    <p className="text-xs text-muted-foreground">
+                      Format: https://x.com/your-username
+                    </p>
+                  )}
                 </div>
 
                 <div className="space-y-2">
@@ -213,12 +247,19 @@ export function CardCreationForm() {
                   <Input
                     id="instagram"
                     type="url"
-                    placeholder="https://instagram.com/johndoe"
+                    placeholder="https://www.instagram.com/johndoe"
                     value={cardData.instagram}
                     onChange={(e) =>
                       handleInputChange('instagram', e.target.value)
                     }
                   />
+                  {instagramError ? (
+                    <p className="text-xs text-destructive">{instagramError}</p>
+                  ) : (
+                    <p className="text-xs text-muted-foreground">
+                      Format: https://www.instagram.com/your-username
+                    </p>
+                  )}
                 </div>
               </div>
 
