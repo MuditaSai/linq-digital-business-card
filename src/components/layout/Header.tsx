@@ -27,8 +27,8 @@ export function Header() {
           >
             Examples
           </Link>
-          <Button variant="default" size="sm">
-            Create Card
+          <Button asChild variant="default" size="sm">
+            <Link href="/create">Create Card</Link>
           </Button>
         </nav>
       </div>

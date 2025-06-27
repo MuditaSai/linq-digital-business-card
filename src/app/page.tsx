@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -49,11 +50,11 @@ export default function Home() {
                 </div>
               </CardContent>
               <CardFooter className="flex flex-col gap-3">
-                <Button className="w-full" size="lg">
-                  Create Your Card
+                <Button asChild className="w-full" size="lg">
+                  <Link href="/create">Create Your Card</Link>
                 </Button>
-                <Button variant="outline" className="w-full">
-                  View Examples
+                <Button asChild variant="outline" className="w-full">
+                  <Link href="/examples">View Examples</Link>
                 </Button>
               </CardFooter>
             </Card>
