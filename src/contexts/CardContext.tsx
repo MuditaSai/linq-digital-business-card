@@ -27,11 +27,7 @@ const defaultCardData: CardData = {
   twitter: '',
   instagram: '',
   calendarLink: '',
-  customLinks: [
-    { label: '', url: '' },
-    { label: '', url: '' },
-    { label: '', url: '' },
-  ],
+  customLinks: [],
   templateId: 'default',
 };
 

@@ -99,13 +99,43 @@ export function LivePreviewCard() {
           <div className="space-y-3">
             {contactLinks.map((contact, index) => {
               const Icon = contact.icon;
+              let href = '';
+
+              if (contact.type === 'email') {
+                href = `mailto:${contact.value}`;
+              } else if (contact.type === 'phone') {
+                href = `tel:${contact.value}`;
+              } else if (contact.type === 'website') {
+                href = contact.value || '';
+              } else {
+                // Location - no link
+                return (
+                  <div key={index} className="flex items-center gap-3 text-sm">
+                    <Icon className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                    <span className="text-muted-foreground break-all">
+                      {contact.value}
+                    </span>
+                  </div>
+                );
+              }
+
               return (
-                <div key={index} className="flex items-center gap-3 text-sm">
+                <a
+                  key={index}
+                  href={href}
+                  target={contact.type === 'website' ? '_blank' : undefined}
+                  rel={
+                    contact.type === 'website'
+                      ? 'noopener noreferrer'
+                      : undefined
+                  }
+                  className="flex items-center gap-3 text-sm hover:text-primary transition-colors cursor-pointer"
+                >
                   <Icon className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-                  <span className="text-muted-foreground break-all">
+                  <span className="text-muted-foreground break-all hover:text-primary">
                     {contact.value}
                   </span>
-                </div>
+                </a>
               );
             })}
           </div>
@@ -126,9 +156,16 @@ export function LivePreviewCard() {
                     variant="outline"
                     size="sm"
                     className="flex items-center gap-2 h-8 px-3"
+                    asChild
                   >
-                    <Icon className="h-3 w-3" />
-                    <span className="text-xs">{social.platform}</span>
+                    <a
+                      href={social.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Icon className="h-3 w-3" />
+                      <span className="text-xs">{social.platform}</span>
+                    </a>
                   </Button>
                 );
               })}
@@ -138,9 +175,15 @@ export function LivePreviewCard() {
 
         {/* Calendar Link */}
         {cardData.calendarLink && (
-          <Button className="w-full" variant="outline">
-            <Calendar className="h-4 w-4 mr-2" />
-            Book a Meeting
+          <Button className="w-full" variant="outline" asChild>
+            <a
+              href={cardData.calendarLink}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Calendar className="h-4 w-4 mr-2" />
+              Book a Meeting
+            </a>
           </Button>
         )}
 
@@ -156,9 +199,12 @@ export function LivePreviewCard() {
                   key={index}
                   variant="outline"
                   className="w-full justify-between h-9"
+                  asChild
                 >
-                  <span className="text-sm">{link.label}</span>
-                  <ExternalLink className="h-3 w-3" />
+                  <a href={link.url} target="_blank" rel="noopener noreferrer">
+                    <span className="text-sm">{link.label}</span>
+                    <ExternalLink className="h-3 w-3" />
+                  </a>
                 </Button>
               ))}
             </div>

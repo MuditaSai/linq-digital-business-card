@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useCard } from '@/contexts/CardContext';
 import { CardData } from '@/types/card';
 import { getSocialMediaError } from '@/utils/urlValidation';
+import { Plus, X } from 'lucide-react';
 
 export function CardCreationForm() {
   const { cardData, updateCardData } = useCard();
@@ -38,6 +39,19 @@ export function CardCreationForm() {
       ...newCustomLinks[index],
       [field]: value,
     };
+    updateCardData('customLinks', newCustomLinks);
+  };
+
+  const addCustomLink = () => {
+    const currentLinks = cardData.customLinks || [];
+    if (currentLinks.length < 3) {
+      updateCardData('customLinks', [...currentLinks, { label: '', url: '' }]);
+    }
+  };
+
+  const removeCustomLink = (index: number) => {
+    const newCustomLinks = [...(cardData.customLinks || [])];
+    newCustomLinks.splice(index, 1);
     updateCardData('customLinks', newCustomLinks);
   };
 
@@ -193,12 +207,8 @@ export function CardCreationForm() {
                       handleInputChange('linkedin', e.target.value)
                     }
                   />
-                  {linkedinError ? (
+                  {linkedinError && (
                     <p className="text-xs text-destructive">{linkedinError}</p>
-                  ) : (
-                    <p className="text-xs text-muted-foreground">
-                      Format: https://www.linkedin.com/in/your-username
-                    </p>
                   )}
                 </div>
 
@@ -213,12 +223,8 @@ export function CardCreationForm() {
                       handleInputChange('github', e.target.value)
                     }
                   />
-                  {githubError ? (
+                  {githubError && (
                     <p className="text-xs text-destructive">{githubError}</p>
-                  ) : (
-                    <p className="text-xs text-muted-foreground">
-                      Format: https://github.com/your-username
-                    </p>
                   )}
                 </div>
 
@@ -233,12 +239,8 @@ export function CardCreationForm() {
                       handleInputChange('twitter', e.target.value)
                     }
                   />
-                  {twitterError ? (
+                  {twitterError && (
                     <p className="text-xs text-destructive">{twitterError}</p>
-                  ) : (
-                    <p className="text-xs text-muted-foreground">
-                      Format: https://x.com/your-username
-                    </p>
                   )}
                 </div>
 
@@ -253,12 +255,8 @@ export function CardCreationForm() {
                       handleInputChange('instagram', e.target.value)
                     }
                   />
-                  {instagramError ? (
+                  {instagramError && (
                     <p className="text-xs text-destructive">{instagramError}</p>
-                  ) : (
-                    <p className="text-xs text-muted-foreground">
-                      Format: https://www.instagram.com/your-username
-                    </p>
                   )}
                 </div>
               </div>
@@ -279,46 +277,84 @@ export function CardCreationForm() {
 
             {/* Custom Links */}
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold">
-                Custom Links{' '}
-                <span className="text-sm font-normal text-muted-foreground">
-                  (up to 3)
-                </span>
-              </h3>
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold">
+                  Custom Links{' '}
+                  <span className="text-sm font-normal text-muted-foreground">
+                    (up to 3)
+                  </span>
+                </h3>
+                {(!cardData.customLinks ||
+                  cardData.customLinks.length === 0) && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={addCustomLink}
+                    className="flex items-center gap-2"
+                  >
+                    <Plus className="h-4 w-4" />
+                    Add Link
+                  </Button>
+                )}
+              </div>
 
               {cardData.customLinks?.map((link, index) => (
-                <div
-                  key={index}
-                  className="grid grid-cols-1 md:grid-cols-2 gap-4"
-                >
-                  <div className="space-y-2">
-                    <Label htmlFor={`customLabel${index}`}>
-                      Link {index + 1} Label
+                <div key={index} className="space-y-4 p-4 border rounded-lg">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-sm font-medium">
+                      Custom Link {index + 1}
                     </Label>
-                    <Input
-                      id={`customLabel${index}`}
-                      type="text"
-                      placeholder="My Portfolio"
-                      value={link.label}
-                      onChange={(e) =>
-                        handleCustomLinkChange(index, 'label', e.target.value)
-                      }
-                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => removeCustomLink(index)}
+                      className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive"
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor={`customUrl${index}`}>
-                      Link {index + 1} URL
-                    </Label>
-                    <Input
-                      id={`customUrl${index}`}
-                      type="url"
-                      placeholder="https://portfolio.com"
-                      value={link.url}
-                      onChange={(e) =>
-                        handleCustomLinkChange(index, 'url', e.target.value)
-                      }
-                    />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor={`customLabel${index}`}>Label</Label>
+                      <Input
+                        id={`customLabel${index}`}
+                        type="text"
+                        placeholder="My Portfolio"
+                        value={link.label}
+                        onChange={(e) =>
+                          handleCustomLinkChange(index, 'label', e.target.value)
+                        }
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor={`customUrl${index}`}>URL</Label>
+                      <Input
+                        id={`customUrl${index}`}
+                        type="url"
+                        placeholder="https://portfolio.com"
+                        value={link.url}
+                        onChange={(e) =>
+                          handleCustomLinkChange(index, 'url', e.target.value)
+                        }
+                      />
+                    </div>
                   </div>
+                  {cardData.customLinks &&
+                    cardData.customLinks.length < 3 &&
+                    index === cardData.customLinks.length - 1 && (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={addCustomLink}
+                        className="flex items-center gap-2 w-full"
+                      >
+                        <Plus className="h-4 w-4" />
+                        Add Another Link
+                      </Button>
+                    )}
                 </div>
               ))}
             </div>
