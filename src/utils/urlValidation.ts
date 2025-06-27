@@ -38,6 +38,28 @@ export const socialMediaValidation = {
   },
 };
 
+// Email and phone validation
+export const contactValidation = {
+  email: {
+    pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+    isValid: (email: string) => {
+      if (!email.trim()) return true; // Allow empty
+      return contactValidation.email.pattern.test(email);
+    },
+  },
+
+  phone: {
+    // International phone number pattern (allows various formats)
+    pattern: /^[\+]?[1-9][\d\s\-\(\)]{7,}$/,
+    isValid: (phone: string) => {
+      if (!phone.trim()) return true; // Allow empty
+      // Remove common formatting characters for validation
+      const cleanPhone = phone.replace(/[\s\-\(\)]/g, '');
+      return contactValidation.phone.pattern.test(cleanPhone);
+    },
+  },
+};
+
 export const getSocialMediaError = (
   platform: keyof typeof socialMediaValidation,
   url: string
@@ -47,6 +69,24 @@ export const getSocialMediaError = (
   const validator = socialMediaValidation[platform];
   if (!validator.isValid(url)) {
     return `Please use the format: ${validator.example}`;
+  }
+
+  return null;
+};
+
+export const getContactError = (
+  type: keyof typeof contactValidation,
+  value: string
+): string | null => {
+  if (!value.trim()) return null;
+
+  const validator = contactValidation[type];
+  if (!validator.isValid(value)) {
+    if (type === 'email') {
+      return 'Please enter a valid email address';
+    } else if (type === 'phone') {
+      return 'Please enter a valid phone number';
+    }
   }
 
   return null;

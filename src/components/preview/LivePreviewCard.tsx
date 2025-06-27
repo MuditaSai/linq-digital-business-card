@@ -15,6 +15,7 @@ import {
   Calendar,
   ExternalLink,
 } from 'lucide-react';
+import { contactValidation } from '@/utils/urlValidation';
 
 export function LivePreviewCard() {
   const { cardData } = useCard();
@@ -100,13 +101,25 @@ export function LivePreviewCard() {
             {contactLinks.map((contact, index) => {
               const Icon = contact.icon;
               let href = '';
+              let isValidContact = true;
 
               if (contact.type === 'email') {
-                href = `mailto:${contact.value}`;
+                isValidContact = contactValidation.email.isValid(
+                  contact.value || ''
+                );
+                if (isValidContact) {
+                  href = `mailto:${contact.value}`;
+                }
               } else if (contact.type === 'phone') {
-                href = `tel:${contact.value}`;
+                isValidContact = contactValidation.phone.isValid(
+                  contact.value || ''
+                );
+                if (isValidContact) {
+                  href = `tel:${contact.value}`;
+                }
               } else if (contact.type === 'website') {
                 href = contact.value || '';
+                // Website validation could be added here if needed
               } else {
                 // Location - no link
                 return (
@@ -119,24 +132,37 @@ export function LivePreviewCard() {
                 );
               }
 
-              return (
-                <a
-                  key={index}
-                  href={href}
-                  target={contact.type === 'website' ? '_blank' : undefined}
-                  rel={
-                    contact.type === 'website'
-                      ? 'noopener noreferrer'
-                      : undefined
-                  }
-                  className="flex items-center gap-3 text-sm hover:text-primary transition-colors cursor-pointer"
-                >
-                  <Icon className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-                  <span className="text-muted-foreground break-all hover:text-primary">
-                    {contact.value}
-                  </span>
-                </a>
-              );
+              // If we have a valid href (and it's valid contact info), make it clickable
+              if (href && isValidContact) {
+                return (
+                  <a
+                    key={index}
+                    href={href}
+                    target={contact.type === 'website' ? '_blank' : undefined}
+                    rel={
+                      contact.type === 'website'
+                        ? 'noopener noreferrer'
+                        : undefined
+                    }
+                    className="flex items-center gap-3 text-sm hover:text-primary transition-colors cursor-pointer"
+                  >
+                    <Icon className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                    <span className="text-muted-foreground break-all hover:text-primary">
+                      {contact.value}
+                    </span>
+                  </a>
+                );
+              } else {
+                // Show as non-clickable text if invalid email/phone or no href
+                return (
+                  <div key={index} className="flex items-center gap-3 text-sm">
+                    <Icon className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                    <span className="text-muted-foreground break-all">
+                      {contact.value}
+                    </span>
+                  </div>
+                );
+              }
             })}
           </div>
         )}

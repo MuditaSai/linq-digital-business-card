@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useCard } from '@/contexts/CardContext';
 import { CardData } from '@/types/card';
-import { getSocialMediaError } from '@/utils/urlValidation';
+import { getSocialMediaError, getContactError } from '@/utils/urlValidation';
 import { Plus, X } from 'lucide-react';
 
 export function CardCreationForm() {
@@ -28,6 +28,10 @@ export function CardCreationForm() {
     'instagram',
     cardData.instagram || ''
   );
+
+  // Get validation errors for contact fields
+  const emailError = getContactError('email', cardData.email || '');
+  const phoneError = getContactError('phone', cardData.phone || '');
 
   const handleCustomLinkChange = (
     index: number,
@@ -146,6 +150,9 @@ export function CardCreationForm() {
                     value={cardData.phone}
                     onChange={(e) => handleInputChange('phone', e.target.value)}
                   />
+                  {phoneError && (
+                    <p className="text-xs text-destructive">{phoneError}</p>
+                  )}
                 </div>
 
                 <div className="space-y-2">
@@ -157,6 +164,9 @@ export function CardCreationForm() {
                     value={cardData.email}
                     onChange={(e) => handleInputChange('email', e.target.value)}
                   />
+                  {emailError && (
+                    <p className="text-xs text-destructive">{emailError}</p>
+                  )}
                 </div>
               </div>
 
