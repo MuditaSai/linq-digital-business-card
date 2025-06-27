@@ -1,42 +1,18 @@
 'use client';
 
-import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useCard } from '@/contexts/CardContext';
 import { CardData } from '@/types/card';
 
 export function CardCreationForm() {
-  const [formData, setFormData] = useState<CardData>({
-    name: '',
-    profileImage: '',
-    jobTitle: '',
-    company: '',
-    bio: '',
-    phone: '',
-    email: '',
-    website: '',
-    location: '',
-    linkedin: '',
-    github: '',
-    twitter: '',
-    instagram: '',
-    calendarLink: '',
-    customLinks: [
-      { label: '', url: '' },
-      { label: '', url: '' },
-      { label: '', url: '' },
-    ],
-    templateId: 'default',
-  });
+  const { cardData, updateCardData } = useCard();
 
   const handleInputChange = (field: keyof CardData, value: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
+    updateCardData(field, value);
   };
 
   const handleCustomLinkChange = (
@@ -44,21 +20,18 @@ export function CardCreationForm() {
     field: 'label' | 'url',
     value: string
   ) => {
-    const newCustomLinks = [...(formData.customLinks || [])];
+    const newCustomLinks = [...(cardData.customLinks || [])];
     newCustomLinks[index] = {
       ...newCustomLinks[index],
       [field]: value,
     };
-    setFormData((prev) => ({
-      ...prev,
-      customLinks: newCustomLinks,
-    }));
+    updateCardData('customLinks', newCustomLinks);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement card creation logic in LINQ-5
-    console.log('Card data:', formData);
+    // TODO: Implement card creation logic in LINQ-8
+    console.log('Card data:', cardData);
   };
 
   return (
@@ -81,7 +54,7 @@ export function CardCreationForm() {
                   id="name"
                   type="text"
                   placeholder="John Doe"
-                  value={formData.name}
+                  value={cardData.name}
                   onChange={(e) => handleInputChange('name', e.target.value)}
                   required
                 />
@@ -93,7 +66,7 @@ export function CardCreationForm() {
                   id="jobTitle"
                   type="text"
                   placeholder="Software Engineer"
-                  value={formData.jobTitle}
+                  value={cardData.jobTitle}
                   onChange={(e) =>
                     handleInputChange('jobTitle', e.target.value)
                   }
@@ -106,7 +79,7 @@ export function CardCreationForm() {
                   id="company"
                   type="text"
                   placeholder="Acme Corp"
-                  value={formData.company}
+                  value={cardData.company}
                   onChange={(e) => handleInputChange('company', e.target.value)}
                 />
               </div>
@@ -121,13 +94,13 @@ export function CardCreationForm() {
                 <Textarea
                   id="bio"
                   placeholder="Passionate about building great products and solving complex problems."
-                  value={formData.bio}
+                  value={cardData.bio}
                   onChange={(e) => handleInputChange('bio', e.target.value)}
                   maxLength={250}
                   className="resize-none"
                 />
                 <div className="text-xs text-muted-foreground text-right">
-                  {formData.bio?.length || 0}/250
+                  {cardData.bio?.length || 0}/250
                 </div>
               </div>
             </div>
@@ -143,7 +116,7 @@ export function CardCreationForm() {
                     id="phone"
                     type="tel"
                     placeholder="+1 (555) 123-4567"
-                    value={formData.phone}
+                    value={cardData.phone}
                     onChange={(e) => handleInputChange('phone', e.target.value)}
                   />
                 </div>
@@ -154,7 +127,7 @@ export function CardCreationForm() {
                     id="email"
                     type="email"
                     placeholder="john@example.com"
-                    value={formData.email}
+                    value={cardData.email}
                     onChange={(e) => handleInputChange('email', e.target.value)}
                   />
                 </div>
@@ -167,7 +140,7 @@ export function CardCreationForm() {
                     id="website"
                     type="url"
                     placeholder="https://johndoe.com"
-                    value={formData.website}
+                    value={cardData.website}
                     onChange={(e) =>
                       handleInputChange('website', e.target.value)
                     }
@@ -180,7 +153,7 @@ export function CardCreationForm() {
                     id="location"
                     type="text"
                     placeholder="San Francisco, CA"
-                    value={formData.location}
+                    value={cardData.location}
                     onChange={(e) =>
                       handleInputChange('location', e.target.value)
                     }
@@ -202,7 +175,7 @@ export function CardCreationForm() {
                     id="linkedin"
                     type="url"
                     placeholder="https://linkedin.com/in/johndoe"
-                    value={formData.linkedin}
+                    value={cardData.linkedin}
                     onChange={(e) =>
                       handleInputChange('linkedin', e.target.value)
                     }
@@ -215,7 +188,7 @@ export function CardCreationForm() {
                     id="github"
                     type="url"
                     placeholder="https://github.com/johndoe"
-                    value={formData.github}
+                    value={cardData.github}
                     onChange={(e) =>
                       handleInputChange('github', e.target.value)
                     }
@@ -228,7 +201,7 @@ export function CardCreationForm() {
                     id="twitter"
                     type="url"
                     placeholder="https://x.com/johndoe"
-                    value={formData.twitter}
+                    value={cardData.twitter}
                     onChange={(e) =>
                       handleInputChange('twitter', e.target.value)
                     }
@@ -241,7 +214,7 @@ export function CardCreationForm() {
                     id="instagram"
                     type="url"
                     placeholder="https://instagram.com/johndoe"
-                    value={formData.instagram}
+                    value={cardData.instagram}
                     onChange={(e) =>
                       handleInputChange('instagram', e.target.value)
                     }
@@ -255,7 +228,7 @@ export function CardCreationForm() {
                   id="calendarLink"
                   type="url"
                   placeholder="https://calendly.com/johndoe"
-                  value={formData.calendarLink}
+                  value={cardData.calendarLink}
                   onChange={(e) =>
                     handleInputChange('calendarLink', e.target.value)
                   }
@@ -272,7 +245,7 @@ export function CardCreationForm() {
                 </span>
               </h3>
 
-              {formData.customLinks?.map((link, index) => (
+              {cardData.customLinks?.map((link, index) => (
                 <div
                   key={index}
                   className="grid grid-cols-1 md:grid-cols-2 gap-4"
@@ -315,7 +288,7 @@ export function CardCreationForm() {
                 type="submit"
                 size="lg"
                 className="w-full"
-                disabled={!formData.name.trim()}
+                disabled={!cardData.name.trim()}
               >
                 Create My Card
               </Button>
